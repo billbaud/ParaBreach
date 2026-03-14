@@ -10,8 +10,17 @@
   const overlayTitle = overlay.querySelector('.title');
   const overlaySub = overlay.querySelector('.sub');
   const splashGraphic = overlay.querySelector('.splash-graphic');
+  const TROOPER_ALERT_INTERVAL = 1.5;
+  const TROOPER_TURRET_LANDING_BUFFER = 92;
 
   const explosionSound = new Audio('assets/sounds/FinalExplosion.wav');
+  const chopperExplosionSound = new Audio('assets/sounds/ChopperExplosion.wav');
+  const missileExplosionSound = new Audio('assets/sounds/MissileExplosion.wav');
+  const missileLaunchSound = new Audio('assets/sounds/MissileLaunch.wav');
+  const trooperAlertSound = new Audio('assets/sounds/TrooperAlert.wav');
+  const trooperGroundHitSound = new Audio('assets/sounds/TrooperGroundHit.wav');
+  const trooperHitSound = new Audio('assets/sounds/TrooperHit.wav');
+  const turretExplosionSound = new Audio('assets/sounds/FinalExplosion.wav');
 
   const initialTitle = overlayTitle.innerHTML;
   const initialSub = overlaySub.innerHTML;
@@ -70,6 +79,7 @@
   let trooperKills = 0;
   let nextTankAt = 100;
   let jammedTimer = 0;
+  let trooperAlertTimer = TROOPER_ALERT_INTERVAL;
 
   function resize() {
     dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
@@ -105,6 +115,7 @@
     trooperKills = 0;
     nextTankAt = 100;
     jammedTimer = 0;
+    trooperAlertTimer = TROOPER_ALERT_INTERVAL;
     updateHud();
     flashTimer = 0;
     turretDestroyed = false;
@@ -117,12 +128,24 @@
     endAssault.timer = 0;
     endAssault.phaseDuration = 0;
     endAssault.beat = 0;
+    trooperAlertSound.pause();
+    trooperAlertSound.currentTime = 0;
   }
 
   function updateHud() {
     scoreEl.textContent = 'SCORE ' + String(score).padStart(6, '0');
     waveEl.textContent = 'WAVE ' + wave + (jammedTimer > 0 ? '  JAMMED' : '');
     livesEl.textContent = 'TROOPERS ' + groundTroopers.length;
+  }
+
+  function clampTrooperLandingX(x) {
+    const minX = 30;
+    const maxX = w - 30;
+    const clampedX = Math.max(minX, Math.min(maxX, x));
+    if (Math.abs(clampedX - turret.x) >= TROOPER_TURRET_LANDING_BUFFER) return clampedX;
+    return clampedX < turret.x
+      ? Math.max(minX, turret.x - TROOPER_TURRET_LANDING_BUFFER)
+      : Math.min(maxX, turret.x + TROOPER_TURRET_LANDING_BUFFER);
   }
 
   function rand(min, max) {
@@ -219,6 +242,7 @@
       vy: (dy / d) * speed,
       r: 8
     });
+    playSound(missileLaunchSound);
   }
 
   function spawnParachuteTank() {
@@ -246,7 +270,7 @@
     });
   }
 
-  function addExplosion(x, y, count = 18) {
+  function addExplosion(x, y, count = 18, sound = explosionSound) {
     for (let i = 0; i < count; i++) {
       const a = rand(0, Math.PI * 2);
       const s = rand(40, 220);
@@ -259,7 +283,11 @@
         size: rand(1.5, 3.5)
       });
     }
-    playSound(explosionSound);
+    playSound(sound);
+  }
+
+  function addChopperExplosion(x, y, count = 18) {
+    addExplosion(x, y, count, chopperExplosionSound);
   }
 
   function addPop(x, y) {
@@ -307,6 +335,7 @@
     endAssault.timer = 0.9;
     endAssault.phaseDuration = 0.9;
     endAssault.beat = 0;
+    trooperAlertTimer = TROOPER_ALERT_INTERVAL;
     for (let i = 0; i < groundTroopers.length; i++) {
       const t = groundTroopers[i];
       t.attackPhase = 'intimidate';
@@ -381,7 +410,7 @@
     deathFx.burstsLeft = 6;
     addShockwave(turret.x, turret.y, 14, 5);
     addVectorFireworks(turret.x, turret.y, 3);
-    playSound(explosionSound);
+    playSound(turretExplosionSound);
     flashTimer = 0.22;
   }
 
@@ -539,6 +568,7 @@
         if (lineCircleHit(oldX, oldY, b.x, b.y, m.x, m.y, m.r)) {
           addShockwave(m.x, m.y, 10, 2);
           addVectorFireworks(m.x, m.y, 1);
+          playSound(missileExplosionSound);
           missiles.splice(j, 1);
           bullets.splice(i, 1);
           score += 20;
@@ -589,7 +619,7 @@
         const rx = heli.x - heli.width / 2;
         const ry = heli.y - heli.height / 2;
         if (lineRectHit(oldX, oldY, b.x, b.y, rx, ry, heli.width, heli.height)) {
-          addExplosion(heli.x, heli.y, 22);
+          addChopperExplosion(heli.x, heli.y, 22);
           helicopters.splice(j, 1);
           bullets.splice(i, 1);
           score += 10;
@@ -639,6 +669,7 @@
             score += 2;
           } else {
             addPop(t.x, t.y + 8);
+            playSound(trooperHitSound);
             troopers.splice(j, 1);
             score += 5;
             trooperKills++;
@@ -653,6 +684,7 @@
         const t = groundTroopers[j];
         if (lineCircleHit(oldX, oldY, b.x, b.y, t.x, t.y + 8 - (t.jumpOffset || 0), 9)) {
           addPop(t.x, t.y + 8 - (t.jumpOffset || 0));
+          playSound(trooperHitSound);
           groundTroopers.splice(j, 1);
           bullets.splice(i, 1);
           score += 6;
@@ -672,6 +704,7 @@
     for (let i = troopers.length - 1; i >= 0; i--) {
       const t = troopers[i];
       t.swing += dt * 2.2;
+      let crushedGroundTrooper = false;
 
       if (t.parachute) {
         t.vy += 18 * dt;
@@ -699,16 +732,37 @@
             }
           }
         }
+
+        for (let j = groundTroopers.length - 1; j >= 0; j--) {
+          const groundTrooper = groundTroopers[j];
+          const groundY = groundTrooper.y + 8 - (groundTrooper.jumpOffset || 0);
+          if (Math.hypot(t.x - groundTrooper.x, (t.y + 8) - groundY) < 14) {
+            addExplosion((t.x + groundTrooper.x) * 0.5, (t.y + groundY) * 0.5, 10, trooperGroundHitSound);
+            addPop(groundTrooper.x, groundY);
+            groundTroopers.splice(j, 1);
+            troopers.splice(i, 1);
+            score += 9;
+            trooperKills += 2;
+            updateHud();
+            crushedGroundTrooper = true;
+            break;
+          }
+        }
+      }
+
+      if (crushedGroundTrooper) {
+        continue;
       }
 
       if (t.y >= gY - 2) {
         t.y = gY - 2;
         if (t.noChuteFall) {
-          addExplosion(t.x, t.y + 5, 10);
+          addExplosion(t.x, t.y + 5, 10, trooperGroundHitSound);
           score += 3;
           trooperKills++;
           updateHud();
         } else {
+          t.x = clampTrooperLandingX(t.x);
           t.landed = true;
           t.parachute = false;
           t.runCycle = rand(0, Math.PI * 2);
@@ -758,6 +812,9 @@
       endAssault.timer = 0;
       endAssault.phaseDuration = 0;
       endAssault.beat = 0;
+      trooperAlertTimer = TROOPER_ALERT_INTERVAL;
+      trooperAlertSound.pause();
+      trooperAlertSound.currentTime = 0;
     }
 
     if (!endAssault.active && groundTroopers.length >= 10) {
@@ -765,6 +822,11 @@
     }
 
     if (endAssault.active) {
+      trooperAlertTimer -= dt;
+      if (trooperAlertTimer <= 0) {
+        playSound(trooperAlertSound);
+        trooperAlertTimer = TROOPER_ALERT_INTERVAL;
+      }
       endAssault.timer -= dt;
       endAssault.beat += dt * 11;
       if (endAssault.phase === 'intimidate' && endAssault.timer <= 0) {
