@@ -2,6 +2,7 @@
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d');
   const scoreEl = document.getElementById('score');
+  const highScoreEl = document.getElementById('highScore');
   const waveEl = document.getElementById('wave');
   const livesEl = document.getElementById('lives');
   const overlay = document.getElementById('overlay');
@@ -10,6 +11,7 @@
   const overlayTitle = overlay.querySelector('.title');
   const overlaySub = overlay.querySelector('.sub');
   const splashGraphic = overlay.querySelector('.splash-graphic');
+  const HIGH_SCORE_KEY = 'parabreachHighScore';
   const TROOPER_ALERT_INTERVAL = 1.5;
   const TROOPER_TURRET_LANDING_BUFFER = 92;
 
@@ -31,6 +33,7 @@
   let lastTs = 0;
   let running = false;
   let pointerDown = false;
+  let activePointerId = null;
   let pointerX = 0;
   let pointerY = 0;
   let flashTimer = 0;
@@ -68,6 +71,8 @@
   };
 
   let score = 0;
+  let highScore = loadHighScore();
+  let highScoreBeaten = false;
   let wave = 1;
   let gameOver = false;
   let fireCooldown = 0;
@@ -105,6 +110,7 @@
     particles.length = 0;
     groundTroopers.length = 0;
     score = 0;
+    highScoreBeaten = false;
     wave = 1;
     gameOver = false;
     fireCooldown = 0;
@@ -133,9 +139,33 @@
   }
 
   function updateHud() {
+    if (score > highScore) {
+      highScore = score;
+      highScoreBeaten = true;
+      saveHighScore(highScore);
+    }
     scoreEl.textContent = 'SCORE ' + String(score).padStart(6, '0');
+    highScoreEl.textContent = 'HI ' + String(highScore).padStart(6, '0');
     waveEl.textContent = 'WAVE ' + wave + (jammedTimer > 0 ? '  JAMMED' : '');
     livesEl.textContent = 'TROOPERS ' + groundTroopers.length;
+  }
+
+  function loadHighScore() {
+    try {
+      const stored = window.localStorage.getItem(HIGH_SCORE_KEY);
+      const parsed = Number.parseInt(stored || '0', 10);
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  function saveHighScore(value) {
+    try {
+      window.localStorage.setItem(HIGH_SCORE_KEY, String(value));
+    } catch {
+      // Ignore storage failures so the game still runs in restricted browsers.
+    }
   }
 
   function clampTrooperLandingX(x) {
@@ -396,7 +426,9 @@
     overlay.classList.add('show');
     splashGraphic.style.display = 'none';
     overlayTitle.textContent = 'GAME OVER';
-    overlaySub.textContent = `Final score ${score}. You have failed the city.`;
+    overlaySub.textContent = highScoreBeaten
+      ? `New high score ${highScore}. Final score ${score}.`
+      : `Final score ${score}. High score ${highScore}.`;
     startBtn.textContent = 'Play Again';
     wrap.style.pointerEvents = 'none';
     playSound(explosionSound);
@@ -1459,14 +1491,14 @@
   }
 
   function getPoint(e) {
-    if (e.touches && e.touches.length) {
-      return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-    }
     return { x: e.clientX, y: e.clientY };
   }
 
   function onPointerStart(e) {
     e.preventDefault();
+    if (activePointerId !== null && e.pointerId !== activePointerId) return;
+    activePointerId = e.pointerId;
+    canvas.setPointerCapture(e.pointerId);
     const p = getPoint(e);
     pointerDown = true;
     aimAt(p.x, p.y);
@@ -1477,11 +1509,19 @@
   }
 
   function onPointerMove(e) {
+    if (activePointerId !== null && e.pointerId !== activePointerId) return;
+    e.preventDefault();
     const p = getPoint(e);
     aimAt(p.x, p.y);
   }
 
-  function onPointerEnd() {
+  function onPointerEnd(e) {
+    if (activePointerId !== null && e.pointerId !== activePointerId) return;
+    e.preventDefault();
+    if (activePointerId !== null && canvas.hasPointerCapture(activePointerId)) {
+      canvas.releasePointerCapture(activePointerId);
+    }
+    activePointerId = null;
     pointerDown = false;
   }
 
@@ -1496,17 +1536,15 @@
     resetGame();
     running = true;
     pointerDown = false;
+    activePointerId = null;
     wrap.style.pointerEvents = 'auto';
   });
 
   window.addEventListener('resize', resize);
-  canvas.addEventListener('mousedown', onPointerStart);
-  canvas.addEventListener('mousemove', onPointerMove);
-  window.addEventListener('mouseup', onPointerEnd);
-  canvas.addEventListener('touchstart', onPointerStart, { passive: false });
-  canvas.addEventListener('touchmove', onPointerMove, { passive: false });
-  canvas.addEventListener('touchend', onPointerEnd, { passive: false });
-  canvas.addEventListener('touchcancel', onPointerEnd, { passive: false });
+  canvas.addEventListener('pointerdown', onPointerStart, { passive: false });
+  canvas.addEventListener('pointermove', onPointerMove, { passive: false });
+  canvas.addEventListener('pointerup', onPointerEnd, { passive: false });
+  canvas.addEventListener('pointercancel', onPointerEnd, { passive: false });
 
   resize();
   aimAt(w * 0.5, h * 0.35);
