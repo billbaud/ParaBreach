@@ -11,6 +11,8 @@
   const overlaySub = overlay.querySelector('.sub');
   const splashGraphic = overlay.querySelector('.splash-graphic');
 
+  const explosionSound = new Audio('assets/sounds/FinalExplosion.wav');
+
   const initialTitle = overlayTitle.innerHTML;
   const initialSub = overlaySub.innerHTML;
 
@@ -257,6 +259,7 @@
         size: rand(1.5, 3.5)
       });
     }
+    playSound(explosionSound);
   }
 
   function addPop(x, y) {
@@ -291,6 +294,11 @@
         });
       }
     }
+  }
+
+  function playSound(sound) {
+    sound.currentTime = 0;
+    sound.play();
   }
 
   function beginEndAssault() {
@@ -362,6 +370,7 @@
     overlaySub.textContent = `Final score ${score}. You have failed the city.`;
     startBtn.textContent = 'Play Again';
     wrap.style.pointerEvents = 'none';
+    playSound(explosionSound);
   }
 
   function startTurretDestruction() {
@@ -372,7 +381,7 @@
     deathFx.burstsLeft = 6;
     addShockwave(turret.x, turret.y, 14, 5);
     addVectorFireworks(turret.x, turret.y, 3);
-    addExplosion(turret.x, turret.y, 36);
+    playSound(explosionSound);
     flashTimer = 0.22;
   }
 
