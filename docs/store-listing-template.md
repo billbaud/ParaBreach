@@ -8,23 +8,28 @@ ParaBreach
 
 ## Short Description
 
-Retro vector arcade defense with Paratrooper-era tension, sabotage pressure, and one-more-run score chasing.
+ParaBreach: Hold the Line. The sky is falling, and it is armed to the teeth.
 
 ## Full Description
 
-ParaBreach is a fast, focused arcade defense game built around crisp vector visuals, sharp audio cues, and escalating pressure.
+ParaBreach: Hold the Line.
+The sky is falling, and it is armed to the teeth.
 
-Enemy aircraft sweep across the sky, dropping troopers and launching missiles toward your position. Aim your turret with mouse, touch, or pen input, cut down incoming threats, and hold the line as each wave becomes more dangerous than the last.
+ParaBreach is a high-octane, retro-inspired arcade defense game that strips away the fluff to deliver pure, white-knuckle tension. Built on the DNA of 80s classics like Sabotage and Paratrooper, it reimagines the lone-turret survival loop with razor-sharp vector aesthetics and a relentless modern pace.
 
-If you miss the white-knuckle feeling of old-school Paratrooper and sabotage arcade games, ParaBreach is designed to hit that same instant arcade tension while giving it a sharper modern presentation.
+You are the last line of defense against a relentless airborne invasion. Enemy transports sweep across the airspace, filling the sky with paratroopers and precision-guided missiles. Your objective is simple: do not let them land.
 
-Designed as a lightweight Progressive Web App, ParaBreach launches quickly, plays well in a window or fullscreen, and stays easy to update between releases.
+Crisp vector warfare keeps the action readable and striking on modern displays. Precision controls make aiming smooth whether you are using a mouse, touch, or pen. Wave after wave ramps up the pressure as enemy assaults become faster, denser, and more aggressive.
+
+Designed as a lightweight PWA, ParaBreach launches quickly and plays beautifully whether you are in a focused fullscreen session or squeezing in a quick windowed run.
+
+The troopers are jumping. The missiles are locked. How long can you hold the breach?
 
 ## Search-Tuned Alternate Description
 
-ParaBreach is a retro vector defense shooter for players who still love Paratrooper-style pressure and sabotage-flavored arcade chaos. Enemy aircraft flood the sky, paratroopers descend toward your position, and every second becomes a score-chasing fight to hold the line.
+ParaBreach is a retro vector defense shooter for players who still love the pressure of Sabotage and Paratrooper. Enemy aircraft flood the sky, paratroopers descend toward your position, and every second becomes a score-chasing fight to hold the line.
 
-Built as a fast, lightweight PWA for Windows, ParaBreach launches quickly, supports mouse and touch controls, and keeps the focus on clean visuals, sharp sound cues, and relentless one-more-run tension.
+Built as a fast, lightweight PWA for Windows, ParaBreach launches quickly, supports mouse and touch controls, and keeps the focus on sharp visuals, fast reactions, and relentless arcade tension.
 
 ## Product Features
 
