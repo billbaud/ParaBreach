@@ -6,6 +6,9 @@ ParaBreach is a retro vector arcade defense game built as a lightweight static w
 
 https://billbaud.github.io/ParaBreach/web/
 
+Privacy policy:
+https://billbaud.github.io/ParaBreach/web/privacy-policy.html
+
 ## Controls
 
 Move mouse, pen, or finger to aim.  

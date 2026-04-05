@@ -41,7 +41,7 @@ This checklist combines current Microsoft Store PWA submission steps with the cu
 - [ ] Partner Center app record created
 - [ ] Age rating answers completed in Partner Center
 - [ ] Pricing and availability chosen
-- [ ] Optional privacy policy URL decided
+- [x] Privacy policy URL published
 - [ ] Optional support/contact URL decided
 
 ## Recommended Partner Center Choices For ParaBreach
