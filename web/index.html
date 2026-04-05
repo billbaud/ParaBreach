@@ -4,12 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>ParaBreach</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <meta name="description" content="Retro vector arcade defense game. Defend your ground from troop drops, missiles, and escalating air assaults." />
+  <meta name="application-name" content="ParaBreach" />
+  <link rel="icon" href="assets/icons/icon-192.png" sizes="192x192" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icons/icon-512.png">
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#000000">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="ParaBreach">
+  <meta name="msapplication-TileColor" content="#000000">
 </head>
 <body>
   <div id="wrap">
@@ -21,7 +27,7 @@
     <div id="highScore">HI 000000</div>
     <div id="wave">WAVE 1</div>
     <div id="lives">TROOPERS 0</div>
-    <div id="version">v.1.24</div>
+    <div id="version">v.1.25.0</div>
   </div>
 
   <div id="help">Move pointer/finger to aim. Tap/click/hold to fire.</div>
@@ -44,16 +50,16 @@
       <button id="startBtn">Press Start</button>
     </div>
   </div>
-
+  <script src="app-meta.js"></script>
   <script src="game.js"></script>
   <script>
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      navigator.serviceWorker.register("./sw.js")
+      navigator.serviceWorker.register("./sw.js", { scope: "./" })
         .then(() => console.log("Service worker registered"))
         .catch(err => console.log("Service worker registration failed:", err));
     });
   }
-</script>
+  </script>
 </body>
 </html>

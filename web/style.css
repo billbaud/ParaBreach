@@ -5,6 +5,14 @@
   --accent: #f4f4f4;
   --danger: #ff4d4d;
 }
+@font-face {
+  font-family: "Press Start 2P";
+  src: url("assets/fonts/PressStart2P-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 html, body {
   margin: 0;
   padding: 0;

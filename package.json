@@ -1,0 +1,14 @@
+{
+  "name": "parabreach",
+  "private": true,
+  "version": "1.25.0",
+  "description": "ParaBreach static web workspace and release tooling.",
+  "scripts": {
+    "dev": "serve web --listen 4173 --single",
+    "dev:host": "serve web --listen tcp://0.0.0.0:4173 --single",
+    "site:dev": "serve site --listen 4174 --single"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
+  }
+}

@@ -5,12 +5,14 @@
   const highScoreEl = document.getElementById('highScore');
   const waveEl = document.getElementById('wave');
   const livesEl = document.getElementById('lives');
+  const versionEl = document.getElementById('version');
   const overlay = document.getElementById('overlay');
   const startBtn = document.getElementById('startBtn');
   const wrap = document.getElementById('wrap');
   const overlayTitle = overlay.querySelector('.title');
   const overlaySub = overlay.querySelector('.sub');
   const splashGraphic = overlay.querySelector('.splash-graphic');
+  const appMeta = window.PARABREACH_META || { version: 'dev' };
   const HIGH_SCORE_KEY = 'parabreachHighScore';
   const TROOPER_ALERT_INTERVAL = 1.5;
   const TROOPER_TURRET_LANDING_BUFFER = 92;
@@ -1525,6 +1527,16 @@
     pointerDown = false;
   }
 
+  function suspendInputState() {
+    pointerDown = false;
+    if (activePointerId !== null && canvas.hasPointerCapture(activePointerId)) {
+      canvas.releasePointerCapture(activePointerId);
+    }
+    activePointerId = null;
+    trooperAlertSound.pause();
+    trooperAlertSound.currentTime = 0;
+  }
+
   startBtn.addEventListener('click', () => {
     if (gameOver) {
       splashGraphic.style.display = 'block';
@@ -1540,6 +1552,12 @@
     wrap.style.pointerEvents = 'auto';
   });
 
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible') {
+      suspendInputState();
+    }
+  });
+
   window.addEventListener('resize', resize);
   canvas.addEventListener('pointerdown', onPointerStart, { passive: false });
   canvas.addEventListener('pointermove', onPointerMove, { passive: false });
@@ -1548,6 +1566,7 @@
 
   resize();
   aimAt(w * 0.5, h * 0.35);
+  versionEl.textContent = `v.${appMeta.version}`;
   render();
   requestAnimationFrame(loop);
 })();
