@@ -8,23 +8,23 @@ ParaBreach
 
 ## Short Description
 
-Retro vector defense arcade action with Paratrooper-era tension, sabotage pressure, and fast score-chasing survival.
+Retro vector arcade defense with Paratrooper-era tension, sabotage pressure, and one-more-run score chasing.
 
 ## Full Description
 
-ParaBreach is a fast arcade defense game built around clean vector visuals, sharp audio cues, and escalating pressure.
+ParaBreach is a fast, focused arcade defense game built around crisp vector visuals, sharp audio cues, and escalating pressure.
 
-Enemy aircraft sweep across the sky, dropping troopers and launching missiles toward your position. Aim your turret with mouse, touch, or pen input and hold the line as the battlefield gets more chaotic with every wave.
+Enemy aircraft sweep across the sky, dropping troopers and launching missiles toward your position. Aim your turret with mouse, touch, or pen input, cut down incoming threats, and hold the line as each wave becomes more dangerous than the last.
 
-If you miss the white-knuckle feeling of old-school Paratrooper and sabotage arcade games, ParaBreach aims for that same immediate danger while giving it a cleaner modern shell.
+If you miss the white-knuckle feeling of old-school Paratrooper and sabotage arcade games, ParaBreach is designed to hit that same instant arcade tension while giving it a sharper modern presentation.
 
-Designed as a lightweight Progressive Web App, ParaBreach launches quickly, plays well in a window or fullscreen, and is easy to update between releases.
+Designed as a lightweight Progressive Web App, ParaBreach launches quickly, plays well in a window or fullscreen, and stays easy to update between releases.
 
 ## Search-Tuned Alternate Description
 
 ParaBreach is a retro vector defense shooter for players who still love Paratrooper-style pressure and sabotage-flavored arcade chaos. Enemy aircraft flood the sky, paratroopers descend toward your position, and every second becomes a score-chasing fight to hold the line.
 
-Built as a fast, lightweight PWA for Windows, ParaBreach launches quickly, supports mouse and touch controls, and keeps the focus on clean visuals, sharp sound cues, and one-more-run tension.
+Built as a fast, lightweight PWA for Windows, ParaBreach launches quickly, supports mouse and touch controls, and keeps the focus on clean visuals, sharp sound cues, and relentless one-more-run tension.
 
 ## Product Features
 
